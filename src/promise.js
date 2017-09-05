@@ -2,7 +2,7 @@
  * @file promise.js A Promise Implementation
  *
  * This implementation conforms to Promise/A+ spec. see: https://promisesaplus.com/
- * @author harttle <yangjun14@baidu.com>
+ * @author harttle <yangjvn@126.com>
  * @module Promise
  */
 
