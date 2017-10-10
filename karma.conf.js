@@ -56,13 +56,36 @@ module.exports = function (config) {
 
         // enable / disable colors in the output (reporters and logs)
         colors: true,
-
+        sauceLabs: {
+            'testName': 'Sauce Labs Test for promise',
+            'recordScreenshots': false,
+            'connectOptions': {
+                port: 5757,
+                logfile: 'sauce_connect.log'
+            },
+            'public': 'public'
+        },
         // level of logging
         // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
         logLevel: config.LOG_INFO,
 
         // enable / disable watching file and executing tests whenever any file changes
         autoWatch: false,
+
+        // Check out https://saucelabs.com/platforms for all browser/OS combos
+        customLaunchers: {
+            slChrome: {
+                base: 'SauceLabs',
+                browserName: 'chrome',
+                platform: 'Windows 7',
+                version: '35'
+            },
+            slFirefox: {
+                base: 'SauceLabs',
+                browserName: 'firefox',
+                version: '30'
+            }
+        },
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher

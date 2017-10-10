@@ -6,6 +6,10 @@ env:
   - BROWSER=ChromeHeadless
 addons:
   chrome: stable
+  sauce_connect:
+    username: "harttle"
+  jwt:
+    secure: QMg+WlgeRKBxgSTaCJ8hKlV3+GSaZZjPh3zb4TeFLkuAXmmsWBW3dtzE2/RafjFoUiby3ZBz4WNASBx4nz7SrGVxIR3HU6l6QqU9NC1Us8Z0RURZbRBuzqpmH5wh6RiYakoWgYrAiyVxIe3LFzORlyHdJUENgEaQy1WhbIMGGgaqaELizAsPMWFbZCSWDVD3X7KyeglfHgkSZe+aVbvZvrPPr/Cl8efwrhYyKxfG7gy4W+NFReCgJf2uyvG+JtzDrPLKULFr4hraIoisoT9IVjlTXfcla/3+khqOfPJOmfqcx2LxI33eNPDfdCPtK4gF7hIFpt5O2y8cOt2y2Q4ajwjeKs8bh8hFFmB3qkf/VCsi2kOS5Uak4pbAaChzDrvrL3Ga81xU+k2GQNu7cpjVLBX9uBVOCpN4wQl8XaYY9DElWW2rzu6wWrn+v1ig8mIzcF29xKbsA+2sH09dXQ6NEnngSzbTyDCsqHpDROwV+5tU8fVZnsVzfynXwWWxe28oon5m23GJ7NT8iXCtUFn+26C4596aNDwxpGKeUxJJlQ8dy6xfvxxWJw6vEte3df6dbz7ckxc0MeAumTkuFGl0wQ9waL1YzgYSVtJwuECueORp8JuspDfYzdH8LcxV9F4PF390F5HWgLEtXuB8Pro+YTaiMWl588gm2qFbY3L4nuk=
 cache:
   directories:
     - "node_modules"
@@ -13,6 +17,6 @@ script:
   - npm install -g apmjs
   - apm install
   - npm run lint
-  - npm run coveralls
+  - npm run ci
 before_install:
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
