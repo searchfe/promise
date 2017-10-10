@@ -7,7 +7,7 @@
     "lint": "fecs check src *.js",
     "preversion": "npm run lint && npm test",
     "postversion": "git push && git push --tags",
-    "ci": "karma start --reporters mocha,coverage,coveralls,saucelabs --browsers slChrome, slFirefox",
+    "ci": "karma start --reporters mocha,coverage,coveralls,saucelabs --browsers slChrome,slFirefox",
     "test": "karma start"
   },
   "repository": {
