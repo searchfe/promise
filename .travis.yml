@@ -10,6 +10,8 @@ cache:
   directories:
     - "node_modules"
 script:
+  - npm install -g apmjs
+  - apm install
   - npm run lint
   - npm run coveralls
 before_install:
