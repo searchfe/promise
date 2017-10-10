@@ -4,7 +4,7 @@
   "description": "A lightweight promise implementation for the frontend",
   "main": "src/promise.js",
   "scripts": {
-    "lint": "fecs check src, *.js",
+    "lint": "fecs check src *.js",
     "preversion": "npm run lint && npm test",
     "postversion": "git push && git push --tags",
     "coveralls": "karma start --reporters mocha,coverage,coveralls",

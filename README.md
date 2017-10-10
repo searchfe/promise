@@ -49,7 +49,7 @@ require(['@searchfe/promise'], function(Promise){
 这些机制的 Fallback 顺序如下（序号越小优先级越高）：
 
 1. `setImmediate` (W3C 标准)
-2. `MessageChannel.postMessage`（Worker 中使用）
+2. `MessageChannel.postMessage`（支持 Worker 的浏览器）
 3. `window.postMessage`（非 IE8）
 4. `setTimeout`（IE 8 及以下）
 

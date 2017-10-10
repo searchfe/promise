@@ -1,3 +1,7 @@
+/**
+ * @file setImmediate polyfill
+ * @author harttle<harttle@harttle.com>
+ */
 define(function () {
     var global = getGlobal();
     var MSG = 'setImmediate polyfill';
