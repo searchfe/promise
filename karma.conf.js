@@ -19,7 +19,7 @@ module.exports = function (config) {
             'test-main.js',
             {pattern: 'src/**/*.js', included: false},
             {pattern: 'amd_modules/**/*.js', included: false},
-            {pattern: 'test.js', included: false}
+            {pattern: 'test/**/*.js', included: false}
         ],
 
         // list of files to exclude

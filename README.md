@@ -5,6 +5,8 @@
 
 一个简易的、移动端专用的 Promise。
 
+> Promise/A+ spec. see: https://promisesaplus.com/
+
 ## 使用方式
 
 使用 [APM][apmjs] 安装：

@@ -4,7 +4,7 @@
   "description": "A lightweight promise implementation for the frontend",
   "main": "src/promise.js",
   "scripts": {
-    "lint": "fecs check src *.js",
+    "lint": "eslint src test *.js",
     "preversion": "npm run lint && npm test",
     "postversion": "git push && git push --tags",
     "ci": "karma start --reporters mocha,coverage,coveralls",
@@ -22,7 +22,12 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",
-    "fecs": "^1.4.1",
+    "eslint": "^3.19.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-mocha": "^4.9.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
     "karma": "^1.5.0",
     "karma-chai": "^0.1.0",
     "karma-chai-as-promised": "^0.1.2",
@@ -42,5 +47,8 @@
   "homepage": "https://github.com/searchfe/promise#readme",
   "amdDependencies": {
     "@searchfe/assert": "^1.0.0"
+  },
+  "dependencies": {
+    "eslint-plugin-node": "^5.2.0"
   }
 }

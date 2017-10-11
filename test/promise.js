@@ -1,64 +1,16 @@
-/**
- * @author harttle<harttle@harttle.com>
- * @file 测试src/Promise.js. 标准： Promises/A+ https://Promisesaplus.com/
- */
-
-/* eslint-env mocha */
-
-/* eslint max-nested-callbacks: ["error", 5] */
-
-/* globals sinon: true */
 define(['src/promise', 'src/set-immediate'], function (Promise, setImmediate) {
-    describe('setImmediate', function () {
-        var immediate = setImmediate.impl;
-        [{
-            name: 'w3c-comformant browser',
-            setImmediate: window.setTimeout
-        }, {
-            name: 'browsers support MessageChannel',
-            MessageChannel: window.MessageChannel
-        }, {
-            name: 'browsers support postMessage',
-            addEventListener: window.addEventListener.bind(window),
-            removeEventListener: window.removeEventListener.bind(window),
-            postMessage: window.postMessage.bind(window)
-        }, {
-            name: 'other browsers',
-            setTimeout: window.setTimeout
-        }]
-            .forEach(function (item) {
-                it('should work for ' + item.name, function (done) {
-                    var spy = sinon.spy();
-                    immediate(item, spy);
-                    setTimeout(function () {
-                        expect(spy).to.have.been.calledOnce;
-                        done();
-                    }, 100);
-                });
-                it('should support multiple calls for ' + item.name, function (done) {
-                    var spy = sinon.spy();
-                    immediate(item, spy);
-                    immediate(item, spy);
-                    setTimeout(function () {
-                        expect(spy).to.have.been.calledTwice;
-                        done();
-                    }, 100);
-                });
-            });
-    });
     describe('Promise', function () {
         this.timeout(5000);
 
         describe('new', function () {
             it('should throw when not called as a constructor', function () {
-                function fn() {
-                    // eslint-disable-next-line
+                function fn () {
                     Promise(function () {});
                 }
                 expect(fn).to.throw(/new/);
             });
             it('should throw on invalid arguments', function () {
-                function fn() {
+                function fn () {
                     new Promise();
                 }
                 expect(fn).to.throw(/callback/);
@@ -124,50 +76,55 @@ define(['src/promise', 'src/set-immediate'], function (Promise, setImmediate) {
         });
         describe('#catch()', function () {
             it('should call catch when rejected synchronously', function () {
+                var error = new Error('foo');
                 var p = new Promise(function (resolve, reject) {
-                    reject('foo');
+                    reject(error);
                 });
                 return p.catch(function (err) {
-                    expect(err).to.equal('foo');
+                    expect(err).to.equal(error);
                 });
             });
             it('should call catch when rejected asynchronously', function () {
+                var error = new Error('foo');
                 return new Promise(function (resolve, reject) {
                     setTimeout(function () {
-                        reject('foo');
+                        reject(error);
                     }, 100);
                 }).catch(function (result) {
-                    expect(result).to.equal('foo');
+                    expect(result).to.equal(error);
                 });
             });
             it('should reject when then callback throws', function () {
+                var error = new Error('foo');
                 return Promise.resolve('foo').then(function () {
-                    throw 'bar';
+                    throw error;
                 }).catch(function (err) {
-                    expect(err).to.equal('bar');
+                    expect(err).to.equal(error);
                 });
             });
             it('should reject when then handler returns a rejected', function () {
+                var error = new Error('foo');
                 return Promise.resolve('init').then(function () {
                     return new Promise(function (resolve, reject) {
-                        reject('foo');
+                        reject(error);
                     });
                 }).catch(function (err) {
-                    expect(err).to.equal('foo');
+                    expect(err).to.equal(error);
                 });
             });
             it('should resolve when catch callback resolves', function () {
-                return Promise.reject('foo').catch(function () {
+                return Promise.reject(new Error('foo')).catch(function () {
                     return 'bar';
                 }).then(function (result) {
                     expect(result).to.equal('bar');
                 });
             });
             it('should reject when catch callback rejects', function (done) {
-                Promise.reject('foo').catch(function () {
-                    throw 'bar';
+                var error = new Error('bar');
+                Promise.reject(new Error('foo')).catch(function () {
+                    throw error;
                 }).catch(function (err) {
-                    expect(err).to.equal('bar');
+                    expect(err).to.equal(error);
                     done();
                 });
             });
@@ -175,24 +132,27 @@ define(['src/promise', 'src/set-immediate'], function (Promise, setImmediate) {
                 var spy = sinon.spy();
                 new Promise(function (resolve) {
                     setTimeout(function () {
-                        throw 'foo';
+                        throw new Error('foo');
                     });
                     resolve('bar');
                 })
-                    .catch(spy)
-                    .then(function () {
-                        try {
-                            expect(spy).to.not.have.been.called;
-                            done();
-                        }
-                        catch (e) {
-                            return done(e);
-                        }
-                    });
+                .catch(spy)
+                .then(function () {
+                    try {
+                        expect(spy).to.not.have.been.called;
+                        done();
+                    } catch (e) {
+                        return done(e);
+                    }
+                });
             });
             it('should catch faraway rejection', function (done) {
-                Promise.reject('foo').then(function () {}).catch(function (e) {
-                    expect(e).to.equal('foo');
+                var error = new Error('foo');
+                Promise
+                .reject(error)
+                .then(function () {})
+                .catch(function (e) {
+                    expect(e).to.equal(error);
                     done();
                 });
             });
@@ -211,15 +171,17 @@ define(['src/promise', 'src/set-immediate'], function (Promise, setImmediate) {
                 });
             });
             it('should be called when rejected', function () {
-                return Promise.reject('foo').finally(function (result) {
-                    expect(result).to.equal('foo');
+                var error = new Error('foo');
+                return Promise.reject(error).finally(function (result) {
+                    expect(result).to.equal(error);
                 });
             });
         });
         describe('.reject()', function () {
             it('should reject "foo" when given "foo"', function () {
-                return Promise.reject('foo').catch(function (err) {
-                    expect(err).to.equal('foo');
+                var error = new Error('foo');
+                return Promise.reject(error).catch(function (err) {
+                    expect(err).to.equal(error);
                 });
             });
         });
@@ -231,7 +193,7 @@ define(['src/promise', 'src/set-immediate'], function (Promise, setImmediate) {
             });
             it('should reject when callback throws', function () {
                 return expect(Promise.fromCallback(function (cb) {
-                    throw 'bar';
+                    throw new Error('bar');
                 })).to.eventually.be.rejectedWith('bar');
             });
         });
@@ -245,10 +207,11 @@ define(['src/promise', 'src/set-immediate'], function (Promise, setImmediate) {
                 });
             });
             it('should reject when one rejected', function () {
+                var error = new Error('bar');
                 return Promise
-                    .all([Promise.resolve('foo'), Promise.reject('bar')])
+                    .all([Promise.resolve('foo'), Promise.reject(error)])
                     .catch(function (err) {
-                        return expect(err).to.equal('bar');
+                        return expect(err).to.equal(error);
                     });
             });
             it('should support non-thenable', function () {
@@ -286,8 +249,7 @@ define(['src/promise', 'src/set-immediate'], function (Promise, setImmediate) {
                                         spy1();
                                         resolve('first cb');
                                     }, 10);
-                                }
-                                else {
+                                } else {
                                     spy2();
                                     resolve('foo');
                                 }
@@ -322,10 +284,11 @@ define(['src/promise', 'src/set-immediate'], function (Promise, setImmediate) {
                 window.removeEventListener('unhandledrejection', handler);
             });
             it('should throw PromiseRejectionEvent', function (done) {
-                Promise.reject('foo');
+                var error = new Error('foo');
+                Promise.reject(error);
                 setTimeout(function () {
                     expect(handler).to.have.been.calledWithMatch({
-                        reason: 'foo',
+                        reason: error,
                         type: 'unhandledrejection'
                     });
                     done();
@@ -347,7 +310,7 @@ define(['src/promise', 'src/set-immediate'], function (Promise, setImmediate) {
                 }, 500);
             });
             it('should not throw when error handled', function (done) {
-                Promise.reject('foo').catch(function () {});
+                Promise.reject(new Error('foo')).catch(function () {});
                 setTimeout(function () {
                     expect(handler).to.have.not.been.calledWithMatch({
                         reason: 'foo',
@@ -357,12 +320,13 @@ define(['src/promise', 'src/set-immediate'], function (Promise, setImmediate) {
                 }, 100);
             });
             it('should throw when error re-throwed', function (done) {
-                Promise.reject('foo').catch(function (e) {
+                var error = new Error('foo');
+                Promise.reject(error).catch(function (e) {
                     throw e;
                 });
                 setTimeout(function () {
                     expect(handler).to.have.been.calledWithMatch({
-                        reason: 'foo',
+                        reason: error,
                         type: 'unhandledrejection'
                     });
                     done();

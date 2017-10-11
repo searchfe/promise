@@ -1,13 +1,3 @@
-/**
- * @file promise.js A Promise Implementation
- *
- * This implementation conforms to Promise/A+ spec. see: https://promisesaplus.com/
- * @author harttle <yangjvn@126.com>
- * @module Promise
- */
-
-/* eslint-disable no-extend-native */
-
 define(function (require) {
     var PENDING = 0;
     var FULFILLED = 1;
@@ -35,17 +25,11 @@ define(function (require) {
      *     true ? resolve('foo') : reject('bar');
      * });
      */
-    function Promise(cb) {
-        if (!(this instanceof Promise)) {
-            throw 'Promise must be called with new operator';
-        }
-
-        if (typeof cb !== 'function') {
-            throw 'callback not defined';
-        }
+    function Promise (cb) {
+        assert(this instanceof Promise, 'Promise must be called with new operator');
+        assert(typeof cb === 'function', 'callback not defined');
 
         this._state = PENDING;
-        this._result;
         this._fulfilledCbs = [];
         this._rejectedCbs = [];
         this._errorPending = false;
@@ -77,8 +61,7 @@ define(function (require) {
         if (isThenable(result)) {
             // result.then is un-trusted
             this._fromResolver(result.then.bind(result));
-        }
-        else {
+        } else {
             this._fulfill(result);
         }
     };
@@ -109,8 +92,7 @@ define(function (require) {
                 resolved = true;
                 self._reject(err);
             });
-        }
-        catch (err) {
+        } catch (err) {
             if (resolved) {
                 return;
             }
@@ -125,7 +107,6 @@ define(function (require) {
             var event = mkRejectionEvent(this);
             window.dispatchEvent(event);
         }
-
     };
 
     Promise.prototype._flush = function () {
@@ -146,7 +127,6 @@ define(function (require) {
                     callback(result);
                 });
             }
-
         }, this);
         this._rejectedCbs = [];
         this._fulfilledCbs = [];
@@ -181,8 +161,7 @@ define(function (require) {
                 }
                 try {
                     ret = onFulfilled(result);
-                }
-                catch (e) {
+                } catch (e) {
                     return reject(e);
                 }
                 resolve(ret);
@@ -192,8 +171,7 @@ define(function (require) {
                 }
                 try {
                     ret = onRejected(err);
-                }
-                catch (e) {
+                } catch (e) {
                     return reject(e);
                 }
                 resolve(ret);
@@ -285,7 +263,7 @@ define(function (require) {
             // case for empty array
             flush();
 
-            function flush() {
+            function flush () {
                 if (count <= 0) {
                     resolve(results);
                 }
@@ -320,26 +298,26 @@ define(function (require) {
         var result = [];
         iterable.forEach(function (item, idx) {
             ret = ret
-                .then(function () {
-                    return iteratee(item, idx, iterable);
-                })
-                .then(function (x) {
-                    return result.push(x);
-                });
+        .then(function () {
+            return iteratee(item, idx, iterable);
+        })
+        .then(function (x) {
+            return result.push(x);
+        });
         });
         return ret.then(function () {
             return result;
         });
     };
 
-    function mkRejectionEvent(promise) {
+    function mkRejectionEvent (promise) {
         assert(promise._state === REJECTED, UNHANDLED_REJECTION_EVENT_MSG);
         var RejectionEvent;
         if (typeof window.PromiseRejectionEvent === 'function') {
             RejectionEvent = window.PromiseRejectionEvent;
-        }
-        else {
-            RejectionEvent = CustomEvent;
+        } else {
+      // eslint-disable-next-line
+      RejectionEvent = CustomEvent
         }
         var event = new RejectionEvent('unhandledrejection', {
             promise: promise,
@@ -349,7 +327,7 @@ define(function (require) {
         return event;
     }
 
-    function isThenable(obj) {
+    function isThenable (obj) {
         return obj && typeof obj.then === 'function';
     }
 

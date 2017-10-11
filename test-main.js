@@ -3,7 +3,7 @@
  * @author harttle<yangjvn@126.com>
  */
 var allTestFiles = [];
-var TEST_REGEXP = /(spec|test)\.js$/i;
+var TEST_REGEXP = /test\/.*\.js$/i;
 
 // Get a list of all the test files to include
 Object.keys(window.__karma__.files).forEach(function (file) {
@@ -14,7 +14,6 @@ Object.keys(window.__karma__.files).forEach(function (file) {
         var normalizedTestModule = file.replace(/^\/base\/|\.js$/g, '');
         allTestFiles.push(normalizedTestModule);
     }
-
 });
 
 require.config({
