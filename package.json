@@ -1,6 +1,6 @@
 {
   "name": "@searchfe/promise",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A lightweight promise implementation for the frontend",
   "main": "src/promise.js",
   "scripts": {
