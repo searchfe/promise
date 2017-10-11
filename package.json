@@ -7,14 +7,14 @@
     "lint": "fecs check src *.js",
     "preversion": "npm run lint && npm test",
     "postversion": "git push && git push --tags",
-    "ci": "karma start --reporters mocha,coverage,coveralls,saucelabs --browsers slChrome,slFirefox",
+    "ci": "karma start --reporters mocha,coverage,coveralls",
     "test": "karma start"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/searchfe/promise.git"
   },
-  "author": "harttle <yangjvn@126.com>",
+  "author": "harttle <harttle@harttle.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/searchfe/promise/issues"
@@ -34,7 +34,6 @@
     "karma-mocha": "^1.1.1",
     "karma-mocha-reporter": "^2.0.4",
     "karma-requirejs": "^1.1.0",
-    "karma-sauce-launcher": "^1.2.0",
     "mocha": "^3.2.0",
     "requirejs": "^2.3.5",
     "sinon": "^2.1.0",

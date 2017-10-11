@@ -6,7 +6,6 @@ env:
   - BROWSER=ChromeHeadless
 addons:
   chrome: stable
-  sauce_connect: true
 cache:
   directories:
     - "node_modules"
