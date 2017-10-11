@@ -3,28 +3,47 @@
  * @author harttle<harttle@harttle.com>
  */
 define(function () {
-    var global = getGlobal();
     var MSG = 'setImmediate polyfill';
 
-    function immediate(cb) {
+    function useImmediate(global, cb) {
+        var setImmediate = global.setImmediate;
+        setImmediate(cb);
+    }
+    function useTimeout(global, cb) {
+        var setImmediate = global.setTimeout;
+        setImmediate(cb);
+    }
+    function useMessageChannel(global, cb) {
+        var channel = new global.MessageChannel();
+        channel.port1.onmessage = function () {
+            cb();
+        };
+        channel.port2.postMessage(MSG);
+    }
+    function usePostMessage(global, cb) {
+        global.addEventListener('message', function messageHandler() {
+            global.removeEventListener('message', messageHandler, false);
+            cb();
+        }, false);
+        global.postMessage(MSG, '*');
+    }
+
+    function immediate(global, cb) {
         // W3C conformant browsers
         if (global.setImmediate) {
-            global.setImmediate(cb);
+            useImmediate(global, cb);
         }
         // Workers
         else if (global.MessageChannel) {
-            var channel = new MessageChannel();
-            channel.port1.onmessage = cb;
-            channel.port2.postMessage(MSG);
+            useMessageChannel(global, cb);
         }
         // non-IE8
         else if (global.addEventListener && global.postMessage) {
-            global.addEventListener('message', cb, false);
-            global.postMessage(MSG, '*');
+            usePostMessage(global, cb);
         }
         // Rest old browsers, IE8 goes here
         else {
-            global.setTimeout(cb);
+            useTimeout(global, cb);
         }
     }
 
@@ -41,5 +60,11 @@ define(function () {
         return Function('return this')();
     }
 
-    return immediate;
+    function exports(cb) {
+        var global = getGlobal();
+        immediate(global, cb);
+    }
+    exports.impl = immediate;
+
+    return exports;
 });
