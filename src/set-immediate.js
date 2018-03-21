@@ -1,5 +1,6 @@
 define(function () {
     var MSG = 'setImmediate polyfill';
+    var isBaidu = /baiduboxapp/.test(window.navigator.userAgent);
 
     function useImmediate (global, cb) {
         var setImmediate = global.setImmediate;
@@ -25,16 +26,18 @@ define(function () {
     }
 
     function immediate (global, cb) {
-    // W3C conformant browsers
-        if (global.setImmediate) {
+        if (isBaidu) {
+            useTimeout(global, cb);
+        // W3C conformant browsers, e.g. FireFox
+        } else if (global.setImmediate) {
             useImmediate(global, cb);
-    // Workers
+        // Chrome, Safari, Workers
         } else if (global.MessageChannel) {
             useMessageChannel(global, cb);
-    // non-IE8
+        // non-IE8
         } else if (global.addEventListener && global.postMessage) {
             usePostMessage(global, cb);
-    // Rest old browsers, IE8 goes here
+        // Rest old browsers, IE8 goes here
         } else {
             useTimeout(global, cb);
         }
@@ -46,11 +49,11 @@ define(function () {
         }
 
         if (typeof self !== 'undefined') {
-      // eslint-disable-next-line
-      return self
+            // eslint-disable-next-line
+            return self
         }
-    // eslint-disable-next-line
-    return Function('return this')();
+        // eslint-disable-next-line
+        return Function('return this')();
     }
 
     function exports (cb) {
