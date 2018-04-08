@@ -298,7 +298,7 @@ define(function (require) {
         var pending;
         iterable.forEach(function (item, idx) {
             if (pending) {
-                pending = pending.then(function () {
+                pending = Promise.resolve(pending).then(function () {
                     return iteratee(item, idx, iterable);
                 });
             } else {
@@ -320,8 +320,8 @@ define(function (require) {
         if (typeof window.PromiseRejectionEvent === 'function') {
             RejectionEvent = window.PromiseRejectionEvent;
         } else {
-      // eslint-disable-next-line
-      RejectionEvent = CustomEvent
+            // eslint-disable-next-line
+            RejectionEvent = CustomEvent
         }
         var event = new RejectionEvent('unhandledrejection', {
             promise: promise,
