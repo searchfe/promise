@@ -294,19 +294,23 @@ define(function (require) {
      * @return {Promise} the promise resolves when the last is completed
      */
     Promise.mapSeries = function (iterable, iteratee) {
-        var ret = Promise.resolve('init');
-        var result = [];
+        var results = [];
+        var pending;
         iterable.forEach(function (item, idx) {
-            ret = ret
-        .then(function () {
-            return iteratee(item, idx, iterable);
-        })
-        .then(function (x) {
-            return result.push(x);
+            if (pending) {
+                pending = pending.then(function () {
+                    return iteratee(item, idx, iterable);
+                });
+            } else {
+                pending = Promise.resolve(iteratee(item, idx, iterable));
+            }
+            pending.then(function (result) {
+                results.push(result);
+            });
         });
-        });
-        return ret.then(function () {
-            return result;
+        // resolve results once all pending tasks finished
+        return pending.then(function () {
+            return results;
         });
     };
 

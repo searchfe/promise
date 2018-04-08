@@ -237,6 +237,13 @@ define(['src/promise', 'src/set-immediate'], function (Promise, setImmediate) {
                 });
                 return expect(p).to.rejectedWith('first');
             });
+            it('should call first cb in synchronous fasion', function () {
+                var firstCbcalledFlag = false;
+                Promise.mapSeries(['first', 'second'], function (item) {
+                    firstCbcalledFlag = true;
+                });
+                return expect(firstCbcalledFlag).to.equal(true);
+            });
             it('should resolve in series', function () {
                 var spy1 = sinon.spy();
                 var spy2 = sinon.spy();
