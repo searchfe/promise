@@ -304,7 +304,7 @@ define(function (require) {
             } else {
                 pending = Promise.resolve(iteratee(item, idx, iterable));
             }
-            pending.then(function (result) {
+            pending = pending.then(function (result) {
                 results.push(result);
             });
         });
