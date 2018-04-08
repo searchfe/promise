@@ -211,7 +211,7 @@ define(function (require) {
      * @static
      */
     Promise.resolve = function (obj) {
-        return isThenable(obj) ? obj
+        return obj instanceof Promise ? obj
             : new Promise(function (resolve) {
                 return resolve(obj);
             });
