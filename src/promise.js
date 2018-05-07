@@ -296,6 +296,9 @@ define(function (require) {
     Promise.mapSeries = function (iterable, iteratee) {
         var results = [];
         var pending;
+        if (iterable.length === 0) {
+            return Promise.resolve(results);
+        }
         iterable.forEach(function (item, idx) {
             if (pending) {
                 pending = Promise.resolve(pending).then(function () {

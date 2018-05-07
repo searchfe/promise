@@ -225,6 +225,10 @@ define(['src/promise', 'src/set-immediate'], function (Promise, setImmediate) {
             });
         });
         describe('.mapSeries()', function () {
+            it('should resolve when empty array given', function () {
+                var p = Promise.mapSeries([], function () {});
+                return expect(p).to.eventually.deep.equal([]);
+            });
             it('should resolve when all resolved', function () {
                 var p = Promise.mapSeries(['first', 'second', 'third'], function (item) {
                     return Promise.resolve(item);
